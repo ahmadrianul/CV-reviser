@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CV Matcher & Reviser - Private Professional Toolkit</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- styles.css -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="glow-bg glow-purple"></div>
+    <div class="glow-bg glow-emerald"></div>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="sparkles"></i>
+                </div>
+                <div>
+                    <h1>AI CV Matcher</h1>
+                    <span class="subtitle">Private AI Toolkit</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div id="status-badge" class="badge badge-demo">
+                    <span class="dot"></span>
+                    <span class="badge-text">Mode Demo (Tanpa API Key)</span>
+                </div>
+                <button class="icon-btn" id="btn-tab-settings" title="Pengaturan API Key">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN TABS NAVIGATION -->
+        <nav class="app-nav">
+            <button class="nav-tab active" data-tab="tab-cv">
+                <i data-lucide="file-text"></i>
+                <span>1. Unggah CV</span>
+            </button>
+            <button class="nav-tab" data-tab="tab-job">
+                <i data-lucide="briefcase"></i>
+                <span>2. Lowongan Kerja</span>
+            </button>
+            <button class="nav-tab" data-tab="tab-dashboard" id="nav-tab-dashboard">
+                <i data-lucide="bar-chart-3"></i>
+                <span>3. Hasil Analisis</span>
+                <span class="pulse-indicator hidden" id="result-dot"></span>
+            </button>
+        </nav>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="app-content">
+
+            <!-- TAB 1: UPLOAD CV -->
+            <section class="tab-panel active" id="tab-cv">
+                <div class="card card-hero">
+                    <h2>Mulai dengan CV Anda</h2>
+                    <p class="card-desc">Unggah CV Anda dalam format PDF atau tempel teks CV secara langsung. File Anda diproses sepenuhnya secara lokal dan aman di browser.</p>
+                    
+                    <div class="upload-zone" id="cv-upload-zone">
+                        <i data-lucide="upload-cloud" class="upload-icon"></i>
+                        <h3>Seret & Lepaskan file PDF di sini</h3>
+                        <p class="upload-sub">atau klik untuk memilih dari komputer</p>
+                        <input type="file" id="cv-file-input" accept=".pdf" class="hidden-input">
+                    </div>
+
+                    <div id="cv-file-details" class="file-details hidden">
+                        <div class="file-info">
+                            <i data-lucide="file-check" class="text-emerald"></i>
+                            <div>
+                                <h4 id="cv-filename">filename.pdf</h4>
+                                <p id="cv-filesize">0 KB</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" id="btn-remove-cv">Hapus</button>
+                    </div>
+
+                    <div class="divider">
+                        <span>ATAU TEMPEL TEKS CV</span>
+                    </div>
+
+                    <div class="textarea-container">
+                        <textarea id="cv-text-input" placeholder="Tempelkan isi CV Anda di sini (Pengalaman, Keahlian, Riwayat Kerja)..."></textarea>
+                        <span class="char-count" id="cv-char-count">0 karakter</span>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn btn-primary" id="btn-next-to-job">
+                            <span>Lanjut ke Lowongan Kerja</span>
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: JOB DETAILS -->
+            <section class="tab-panel" id="tab-job">
+                <div class="card card-hero">
+                    <h2>Masukkan Detail Pekerjaan yang Dilamar</h2>
+                    <p class="card-desc">Tempelkan deskripsi pekerjaan atau unggah tangkapan layar (screenshot) iklan lowongan kerja tersebut.</p>
+
+                    <!-- Option Selector -->
+                    <div class="option-tabs">
+                        <button class="option-tab active" data-option="opt-text">
+                            <i data-lucide="align-left"></i>
+                            <span>Teks Lowongan</span>
+                        </button>
+                        <button class="option-tab" data-option="opt-screenshot">
+                            <i data-lucide="image"></i>
+                            <span>Screenshot Iklan</span>
+                        </button>
+                    </div>
+
+                    <!-- Option 1: Teks / Deskripsi Kerja -->
+                    <div class="option-content active" id="opt-text">
+                        <div class="form-group">
+                            <label for="job-title-input">Nama Posisi / Pekerjaan (Opsional)</label>
+                            <input type="text" id="job-title-input" placeholder="Contoh: Senior Frontend Engineer">
+                        </div>
+                        <div class="form-group">
+                            <label for="job-text-input">Deskripsi Pekerjaan & Persyaratan</label>
+                            <textarea id="job-text-input" class="large-textarea" placeholder="Tempelkan kualifikasi, tanggung jawab, dan persyaratan lowongan di sini..."></textarea>
+                            <span class="char-count" id="job-char-count">0 karakter</span>
+                        </div>
+                        <div class="info-box">
+                            <i data-lucide="info"></i>
+                            <p><strong>Tips CORS:</strong> Karena keterbatasan keamanan browser, mengambil teks lowongan langsung dari tautan (URL) sering kali diblokir. Menyalin dan menempel teks deskripsi secara langsung di sini adalah cara paling andal.</p>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: Upload Screenshot -->
+                    <div class="option-content" id="opt-screenshot">
+                        <div class="upload-zone" id="job-upload-zone">
+                            <i data-lucide="image" class="upload-icon"></i>
+                            <h3>Unggah screenshot iklan lowongan</h3>
+                            <p class="upload-sub">Format yang didukung: PNG, JPG, JPEG</p>
+                            <input type="file" id="job-file-input" accept="image/*" class="hidden-input">
+                        </div>
+
+                        <div id="job-image-preview-container" class="image-preview-container hidden">
+                            <img id="job-image-preview" src="" alt="Pratinjau lowongan kerja">
+                            <div class="image-actions">
+                                <span id="job-image-name">screenshot.png</span>
+                                <button class="btn btn-secondary btn-sm" id="btn-remove-image">Ganti Gambar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="card-actions flex-between">
+                        <button class="btn btn-secondary" id="btn-back-to-cv">
+                            <i data-lucide="arrow-left"></i>
+                            <span>Kembali</span>
+                        </button>
+                        <button class="btn btn-emerald" id="btn-run-match">
+                            <i data-lucide="zap"></i>
+                            <span>Analisis & Cocokkan</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DASHBOARD HASIL -->
+            <section class="tab-panel" id="tab-dashboard">
+                <!-- Loading State -->
+                <div id="loading-state" class="loading-state hidden">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <div class="spinner-core"></div>
+                    </div>
+                    <h2 id="loading-title">Menganalisis CV & Kriteria Pekerjaan...</h2>
+                    <p id="loading-sub" class="text-muted">Proses ini membutuhkan waktu sekitar 10-15 detik menggunakan Gemini AI.</p>
+                </div>
+
+                <!-- Empty State (Before running match) -->
+                <div id="empty-state" class="card card-hero text-center py-12">
+                    <i data-lucide="line-chart" class="large-icon text-muted"></i>
+                    <h2>Belum Ada Analisis</h2>
+                    <p class="text-muted max-w-sm mx-auto">Silakan lengkapi data CV dan Detail Pekerjaan terlebih dahulu, lalu klik tombol <strong>"Analisis & Cocokkan"</strong>.</p>
+                    <button class="btn btn-primary mt-6" id="btn-go-to-upload">Mulai Unggah</button>
+                </div>
+
+                <!-- Results Content -->
+                <div id="results-content" class="results-content hidden">
+                    <!-- Top Summary Grid -->
+                    <div class="grid grid-2">
+                        <!-- ATS Score Card -->
+                        <div class="card flex-center text-center">
+                            <h3>Skor Kecocokan ATS</h3>
+                            <div class="gauge-container">
+                                <svg viewBox="0 0 100 100" class="gauge">
+                                    <circle cx="50" cy="50" r="40" class="gauge-bg"></circle>
+                                    <circle cx="50" cy="50" r="40" class="gauge-val" id="gauge-path" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                                </svg>
+                                <div class="gauge-text">
+                                    <span id="match-score">0</span><span class="pct">%</span>
+                                </div>
+                            </div>
+                            <h4 id="match-rating" class="text-emerald">Kecocokan Sangat Baik</h4>
+                            <p class="text-muted text-xs mt-2" id="match-summary-desc">CV Anda memiliki keselarasan yang kuat dengan kualifikasi pekerjaan ini.</p>
+                        </div>
+
+                        <!-- Match Summary Details -->
+                        <div class="card flex-col-between">
+                            <div>
+                                <h3 id="result-job-title" class="text-white">Senior Frontend Engineer</h3>
+                                <p id="result-company" class="text-muted mb-4">Detail Kualifikasi Lowongan</p>
+                                
+                                <div class="stat-list">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Keahlian Teknis (Hard Skills):</span>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar bg-purple" id="bar-hard-skills" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Pengalaman Kerja:</span>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar bg-emerald" id="bar-experience" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Karakter & Soft Skills:</span>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar bg-amber" id="bar-soft-skills" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="quick-recommendation alert alert-info">
+                                <i data-lucide="info" class="flex-shrink-0"></i>
+                                <span id="quick-tip-text">Tambahkan keahlian TypeScript untuk menaikkan skor Anda hingga 92%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Keywords Card -->
+                    <div class="card mt-6">
+                        <h3>Analisis Kata Kunci (Keywords)</h3>
+                        <p class="text-muted text-xs mb-4">Kata kunci keahlian yang ditemukan dari iklan lowongan vs ketersediaan di CV Anda.</p>
+                        
+                        <div class="skills-grid">
+                            <div class="skills-column">
+                                <h4 class="text-emerald flex-items-center"><i data-lucide="check-circle-2"></i> Cocok (Matched)</h4>
+                                <div class="chips-container" id="matched-skills-chips">
+                                    <!-- Dynamic matched chips -->
+                                </div>
+                            </div>
+                            <div class="skills-column">
+                                <h4 class="text-amber flex-items-center"><i data-lucide="alert-triangle"></i> Perlu Ditambahkan (Missing)</h4>
+                                <div class="chips-container" id="missing-skills-chips">
+                                    <!-- Dynamic missing chips -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Revision Recommendation Section -->
+                    <div class="card mt-6">
+                        <div class="card-header-tabs">
+                            <h3>Rekomendasi Revisi CV</h3>
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" data-subtab="rev-summary">Summary</button>
+                                <button class="sub-tab" data-subtab="rev-experience">Pengalaman Kerja</button>
+                                <button class="sub-tab" data-subtab="rev-skills">Struktur Skills</button>
+                            </div>
+                        </div>
+
+                        <!-- Subtab 1: Summary -->
+                        <div class="subtab-content active" id="rev-summary">
+                            <p class="text-muted text-xs mb-4">Revisi deskripsi profil profesional Anda di bagian atas CV agar langsung menarik perhatian perekrut untuk posisi ini.</p>
+                            <div class="comparison-container">
+                                <div class="comp-box">
+                                    <div class="comp-header text-muted">Summary Lama Anda</div>
+                                    <div class="comp-body text-strike" id="orig-summary">Summary awal yang Anda unggah akan ditampilkan di sini.</div>
+                                </div>
+                                <div class="comp-box highlight-border">
+                                    <div class="comp-header text-emerald flex-between">
+                                        <span>Summary Baru (Rekomendasi AI)</span>
+                                        <button class="btn btn-secondary btn-xs btn-copy" data-target="new-summary-text">
+                                            <i data-lucide="copy"></i> Salin
+                                        </button>
+                                    </div>
+                                    <div class="comp-body text-success" id="new-summary-text">Summary baru hasil optimasi AI akan ditampilkan di sini.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subtab 2: Experience -->
+                        <div class="subtab-content" id="rev-experience">
+                            <p class="text-muted text-xs mb-4">Poin-poin deskripsi kerja Anda yang telah disusun ulang untuk menekankan dampak dan menyelaraskan dengan kualifikasi lowongan.</p>
+                            <div class="experience-list-container" id="experience-revisions-list">
+                                <!-- Dynamic experiences items -->
+                            </div>
+                        </div>
+
+                        <!-- Subtab 3: Skills -->
+                        <div class="subtab-content" id="rev-skills">
+                            <p class="text-muted text-xs mb-4">Rekomendasi pengelompokan skill di CV Anda agar terlihat bersih, modern, dan ramah sistem filter ATS.</p>
+                            <div class="skills-structure-box">
+                                <div class="skills-structure-header flex-between">
+                                    <span>Rekomendasi Daftar Skill</span>
+                                    <button class="btn btn-secondary btn-xs btn-copy" data-target="skills-structure-text">
+                                        <i data-lucide="copy"></i> Salin
+                                    </button>
+                                </div>
+                                <pre class="code-box" id="skills-structure-text">
+Hard Skills: React, Node.js, TypeScript, PostgreSQL
+Soft Skills: Mentoring, Agile Methodology
+Tools: Git, Docker, AWS
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cover Letter Generator Card -->
+                    <div class="card mt-6">
+                        <div class="flex-between mb-4">
+                            <div>
+                                <h3>Surat Lamaran Kerja (Cover Letter)</h3>
+                                <p class="text-muted text-xs">AI merumuskan surat lamaran profesional berdasarkan CV Anda yang disesuaikan dengan posisi ini.</p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm btn-copy" data-target="cover-letter-text">
+                                <i data-lucide="copy"></i> Salin Surat
+                            </button>
+                        </div>
+                        <div class="cover-letter-box" id="cover-letter-text">
+                            [Surat lamaran hasil AI akan digenerasikan di sini]
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SETTINGS (MODAL LIKE OVERLAY / FULL TAB) -->
+            <section class="tab-panel" id="tab-settings">
+                <div class="card card-hero">
+                    <h2>Pengaturan Gemini API Key</h2>
+                    <p class="card-desc">Untuk melakukan analisis secara langsung (real-time) dengan CV dan lowongan Anda sendiri, Anda membutuhkan API Key Gemini. Jika dikosongkan, aplikasi akan berjalan dalam **Mode Demo** dengan simulasi.</p>
+
+                    <div class="form-group mt-6">
+                        <label for="api-key-input">Gemini API Key Anda</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="api-key-input" placeholder="Masukkan API Key">
+                            <button type="button" class="toggle-password" id="btn-toggle-key">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="info-box mt-4">
+                        <i data-lucide="help-circle" class="text-purple"></i>
+                        <div>
+                            <h4>Cara Mendapatkan API Key Gratis:</h4>
+                            <ol class="help-list">
+                                <li>Buka <a href="https://aistudio.google.com/" target="_blank" class="link-hover">Google AI Studio <i data-lucide="external-link" class="inline-icon"></i></a></li>
+                                <li>Masuk menggunakan akun Google Anda.</li>
+                                <li>Klik tombol <strong>"Get API key"</strong> di bagian atas.</li>
+                                <li>Klik <strong>"Create API key"</strong> lalu salin kodenya.</li>
+                                <li>Tempelkan kode tersebut pada kolom di atas dan klik Simpan.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card-actions flex-end mt-8">
+                        <button class="btn btn-secondary mr-2" id="btn-close-settings">Kembali</button>
+                        <button class="btn btn-primary" id="btn-save-settings">Simpan Pengaturan</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <i data-lucide="info" id="toast-icon"></i>
+        <span id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="mock-data.js"></script>
+    <script src="gemini-api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
