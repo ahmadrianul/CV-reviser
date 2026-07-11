@@ -3,10 +3,14 @@
 // Initialize PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
+const savedPassword = localStorage.getItem('access_password') || '';
+const isInitiallyUnlocked = savedPassword === '@nakAyam12345';
+
 // Application State
 const state = {
     apiKey: localStorage.getItem('gemini_api_key') || '',
-    activeModel: localStorage.getItem('gemini_active_model') || 'gemini-3.5-flash',
+    activeModel: (isInitiallyUnlocked ? localStorage.getItem('gemini_active_model') : 'gemini-3.1-flash-lite') || 'gemini-3.1-flash-lite',
+    isUnlocked: isInitiallyUnlocked,
     cvText: '',
     cvFileName: '',
     jobTitle: '',
@@ -95,6 +99,10 @@ const els = {
     coverLetterText: document.getElementById('cover-letter-text'),
     
     // Settings Tab
+    accessPasswordInput: document.getElementById('access-password-input'),
+    btnToggleAccessPassword: document.getElementById('btn-toggle-access-password'),
+    apiKeyContainer: document.getElementById('api-key-container'),
+    optionGemini35: document.getElementById('option-gemini-35'),
     apiKeyInput: document.getElementById('api-key-input'),
     modelSelect: document.getElementById('model-select'),
     btnToggleKey: document.getElementById('btn-toggle-key'),
@@ -112,9 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render Icons
     lucide.createIcons();
     
+    // Set Access Password input value if saved
+    if (state.isUnlocked && els.accessPasswordInput) {
+        els.accessPasswordInput.value = '@nakAyam12345';
+        if (els.apiKeyContainer) els.apiKeyContainer.classList.remove('hidden');
+        if (els.optionGemini35) {
+            els.optionGemini35.disabled = false;
+            els.optionGemini35.textContent = 'Gemini 3.5 Flash (Terbaik & Akurat)';
+        }
+    }
+    
     // Load Saved API Key & Check Status
     if (state.apiKey) {
-        els.apiKeyInput.value = state.apiKey;
+        if (els.apiKeyInput) els.apiKeyInput.value = state.apiKey;
         updateApiStatus(true);
     } else {
         updateApiStatus(false);
@@ -525,7 +543,59 @@ function initSettings() {
         });
     }
     
-    // Toggle Visibility
+    // Toggle Access Password Visibility
+    if (els.btnToggleAccessPassword) {
+        els.btnToggleAccessPassword.addEventListener('click', () => {
+            const type = els.accessPasswordInput.type === 'password' ? 'text' : 'password';
+            els.accessPasswordInput.type = type;
+            const icon = els.btnToggleAccessPassword.querySelector('i, svg');
+            if (icon) {
+                icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
+                lucide.createIcons({ node: els.btnToggleAccessPassword });
+            }
+        });
+    }
+
+    // Access Password Validation
+    if (els.accessPasswordInput) {
+        els.accessPasswordInput.addEventListener('input', () => {
+            const val = els.accessPasswordInput.value.trim();
+            if (val === '@nakAyam12345') {
+                state.isUnlocked = true;
+                localStorage.setItem('access_password', '@nakAyam12345');
+                if (els.apiKeyContainer) els.apiKeyContainer.classList.remove('hidden');
+                if (els.optionGemini35) {
+                    els.optionGemini35.disabled = false;
+                    els.optionGemini35.textContent = 'Gemini 3.5 Flash (Terbaik & Akurat)';
+                }
+                showToast('Akses premium terverifikasi! Fitur terbuka.', 'success');
+            } else {
+                // Silently lock premium features while typing
+                state.isUnlocked = false;
+                localStorage.removeItem('access_password');
+                if (els.apiKeyContainer) els.apiKeyContainer.classList.add('hidden');
+                if (els.optionGemini35) {
+                    els.optionGemini35.disabled = true;
+                    els.optionGemini35.textContent = 'Gemini 3.5 Flash (Premium - Terkunci 🔒)';
+                }
+                
+                if (state.activeModel === 'gemini-3.5-flash') {
+                    state.activeModel = 'gemini-3.1-flash-lite';
+                    localStorage.setItem('gemini_active_model', 'gemini-3.1-flash-lite');
+                    if (els.modelSelect) els.modelSelect.value = 'gemini-3.1-flash-lite';
+                }
+            }
+        });
+        
+        els.accessPasswordInput.addEventListener('change', () => {
+            const val = els.accessPasswordInput.value.trim();
+            if (val && val !== '@nakAyam12345') {
+                showToast('Password akses salah. Silakan coba lagi.', 'error');
+            }
+        });
+    }
+
+    // Toggle API Key Visibility
     if (els.btnToggleKey) {
         els.btnToggleKey.addEventListener('click', () => {
             const type = els.apiKeyInput.type === 'password' ? 'text' : 'password';
