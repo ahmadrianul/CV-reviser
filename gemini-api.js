@@ -60,7 +60,7 @@ Kembalikan HANYA objek JSON tersebut tanpa penanda Markdown markdown code blocks
             }
         ],
         generationConfig: {
-            responseMimeType: "application/json"
+            response_mime_type: "application/json"
         }
     };
 
@@ -161,7 +161,7 @@ PENTING:
             }
         ],
         generationConfig: {
-            responseMimeType: "application/json"
+            response_mime_type: "application/json"
         }
     };
 
