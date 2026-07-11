@@ -1310,3 +1310,109 @@ textarea {
 .hidden {
     display: none !important;
 }
+
+/* CV PREVIEW PAGE STYLES */
+.cv-preview-page-container {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    max-height: 600px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.cv-preview-paper {
+    background: #ffffff;
+    color: #18181b; /* zinc-900 / dark black */
+    width: 100%;
+    max-width: 210mm; /* A4 width */
+    min-height: 297mm; /* A4 height */
+    padding: 30px 40px;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-lg);
+    font-family: 'Calibri', 'Arial', sans-serif;
+    line-height: 1.4;
+    text-align: left;
+    border-radius: 4px;
+}
+
+.cv-paper-header {
+    text-align: center;
+    border-bottom: 2px solid #18181b;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.cv-paper-name {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    color: #000000;
+}
+
+.cv-paper-contact {
+    font-size: 11px;
+    color: #52525b; /* zinc-600 */
+    font-weight: 500;
+}
+
+.cv-paper-section {
+    margin-bottom: 18px;
+}
+
+.cv-paper-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-bottom: 1px solid #d4d4d8; /* zinc-300 */
+    padding-bottom: 2px;
+    margin-bottom: 8px;
+    color: #000000;
+    letter-spacing: 0.05em;
+}
+
+.cv-paper-text {
+    font-size: 11px;
+    line-height: 1.5;
+    text-align: justify;
+    color: #18181b;
+}
+
+.cv-paper-experience-item {
+    margin-bottom: 12px;
+}
+
+.cv-paper-exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 700;
+    font-size: 11px;
+    color: #000000;
+    margin-bottom: 2px;
+}
+
+.cv-paper-exp-company {
+    font-weight: 600;
+    color: #52525b;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.cv-paper-bullets {
+    margin: 4px 0;
+    padding-left: 18px;
+    list-style-type: disc;
+}
+
+.cv-paper-bullet-item {
+    font-size: 11px;
+    line-height: 1.45;
+    color: #18181b;
+    margin-bottom: 3px;
+}
+

@@ -114,6 +114,8 @@ ${jobDescription}
 
 Analisis perbandingan keduanya dan berikan respons dalam bahasa Indonesia sebagai objek JSON dengan format berikut:
 {
+  "candidateName": "Nama Lengkap dari CV (jika tidak ditemukan, tulis 'Nama Lengkap')",
+  "candidateContact": "Detail kontak seperti telepon, email, LinkedIn, dll. dari CV, dipisahkan dengan tanda pipa '|'",
   "jobTitle": "Nama Posisi Pekerjaan yang dianalisis",
   "company": "Nama Perusahaan (jika terdeteksi, default 'Lowongan Kerja')",
   "score": [angka integer 0 sampai 100, mencerminkan persentase kecocokan ATS secara objektif],

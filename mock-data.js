@@ -1,5 +1,7 @@
 // MOCK DATA FOR DEMO MODE
 window.mockAnalysisResult = {
+    candidateName: "Andi Pratama",
+    candidateContact: "+62 812 3456 7890 | andi.pratama@email.com | LinkedIn | Jakarta, ID",
     jobTitle: "Senior Frontend Engineer",
     company: "Tokopedia",
     score: 78,

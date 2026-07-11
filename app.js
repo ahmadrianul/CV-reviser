@@ -84,8 +84,13 @@ const els = {
     newSummaryText: document.getElementById('new-summary-text'),
     experienceRevisionsList: document.getElementById('experience-revisions-list'),
     skillsStructureText: document.getElementById('skills-structure-text'),
-    fullCvText: document.getElementById('full-cv-text'),
     btnDownloadCv: document.getElementById('btn-download-cv'),
+    btnCopyFullCv: document.getElementById('btn-copy-full-cv'),
+    cvPaperName: document.getElementById('cv-paper-name'),
+    cvPaperContact: document.getElementById('cv-paper-contact'),
+    cvPaperSummary: document.getElementById('cv-paper-summary'),
+    cvPaperExperience: document.getElementById('cv-paper-experience'),
+    cvPaperSkills: document.getElementById('cv-paper-skills'),
     coverLetterText: document.getElementById('cover-letter-text'),
     
     // Settings Tab
@@ -821,62 +826,212 @@ function renderResults(res) {
     // 9. Cover Letter
     els.coverLetterText.textContent = res.coverLetter || "Rancangan surat lamaran kerja.";
     
-    // 10. Revisions - Full CV Compile
-    const fullCvMd = compileFullCvMarkdown(res);
-    if (els.fullCvText) {
-        els.fullCvText.textContent = fullCvMd;
+    // 10. Revisions - CV Preview Page Render
+    if (els.cvPaperName) els.cvPaperName.textContent = res.candidateName || "NAMA LENGKAP";
+    if (els.cvPaperContact) els.cvPaperContact.textContent = res.candidateContact || "Telepon | Email | LinkedIn | Lokasi";
+    if (els.cvPaperSummary) els.cvPaperSummary.textContent = res.revisions?.summary?.recommended || "Ringkasan profil profesional.";
+    
+    if (els.cvPaperExperience) {
+        els.cvPaperExperience.innerHTML = '';
+        if (res.revisions?.experience?.length) {
+            res.revisions.experience.forEach(exp => {
+                const expItem = document.createElement('div');
+                expItem.className = 'cv-paper-experience-item';
+                
+                const expHeader = document.createElement('div');
+                expHeader.className = 'cv-paper-exp-header';
+                expHeader.innerHTML = `<span>${exp.role.toUpperCase()}</span>`;
+                
+                const expCompany = document.createElement('div');
+                expCompany.className = 'cv-paper-exp-company';
+                expCompany.textContent = exp.company;
+                
+                const bulletList = document.createElement('ul');
+                bulletList.className = 'cv-paper-bullets';
+                
+                if (exp.bullets?.length) {
+                    exp.bullets.forEach(bullet => {
+                        const bulletLi = document.createElement('li');
+                        bulletLi.className = 'cv-paper-bullet-item';
+                        bulletLi.textContent = bullet.recommended;
+                        bulletList.appendChild(bulletLi);
+                    });
+                }
+                
+                expItem.appendChild(expHeader);
+                expItem.appendChild(expCompany);
+                expItem.appendChild(bulletList);
+                els.cvPaperExperience.appendChild(expItem);
+            });
+        } else {
+            els.cvPaperExperience.innerHTML = '<p class="cv-paper-text">Tidak ada riwayat kerja.</p>';
+        }
+    }
+    
+    if (els.cvPaperSkills) {
+        els.cvPaperSkills.textContent = res.revisions?.skillsStructure || "Keahlian.";
     }
 }
 
 function initDownloadButton() {
     if (els.btnDownloadCv) {
         els.btnDownloadCv.addEventListener('click', () => {
-            const text = els.fullCvText.textContent;
-            if (!text || text.includes('[Teks CV lengkap')) {
+            if (!state.analysisResult) {
                 showToast('Jalankan analisis terlebih dahulu.', 'error');
                 return;
             }
-            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+            const htmlContent = compileFullCvHtml(state.analysisResult);
+            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'CV_Revised.md');
+            const filename = `${(state.analysisResult.candidateName || 'CV').replace(/\s+/g, '_')}_Revisi.doc`;
+            link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            showToast('CV berhasil diunduh sebagai Markdown!', 'success');
+            showToast('CV berhasil diunduh sebagai dokumen Word!', 'success');
+        });
+    }
+    
+    if (els.btnCopyFullCv) {
+        els.btnCopyFullCv.addEventListener('click', () => {
+            if (!state.analysisResult) {
+                showToast('Jalankan analisis terlebih dahulu.', 'error');
+                return;
+            }
+            const text = compileFullCvPlainText(state.analysisResult);
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const origHtml = els.btnCopyFullCv.innerHTML;
+                    els.btnCopyFullCv.innerHTML = `<i data-lucide="check" style="width:12px;height:12px;"></i> Berhasil!`;
+                    lucide.createIcons({ node: els.btnCopyFullCv });
+                    setTimeout(() => {
+                        els.btnCopyFullCv.innerHTML = origHtml;
+                        lucide.createIcons({ node: els.btnCopyFullCv });
+                    }, 2000);
+                    showToast('Teks CV berhasil disalin!', 'success');
+                })
+                .catch(() => showToast('Gagal menyalin teks.', 'error'));
         });
     }
 }
 
-function compileFullCvMarkdown(res) {
-    let md = "";
-    md += `# CV TEROPTIMALISASI (REVISI AI)\n\n`;
+function compileFullCvHtml(res) {
+    const name = res.candidateName || "NAMA LENGKAP";
+    const contact = res.candidateContact || "Telepon | Email | LinkedIn | Lokasi";
+    const summary = res.revisions?.summary?.recommended || "";
+    const skills = res.revisions?.skillsStructure || "";
     
-    if (res.revisions?.summary?.recommended) {
-        md += `## RINGKASAN PROFESIONAL\n\n`;
-        md += `${res.revisions.summary.recommended}\n\n`;
-    }
-    
+    let expHtml = "";
     if (res.revisions?.experience?.length) {
-        md += `## PENGALAMAN KERJA\n\n`;
         res.revisions.experience.forEach(exp => {
-            md += `### ${exp.role}\n`;
-            md += `*${exp.company}*\n\n`;
+            let bulletsHtml = "";
             if (exp.bullets?.length) {
-                exp.bullets.forEach(bullet => {
-                    md += `- ${bullet.recommended}\n`;
+                exp.bullets.forEach(b => {
+                    bulletsHtml += `<li style="font-size: 11pt; font-family: 'Calibri', Arial, sans-serif; line-height: 1.4; margin-bottom: 3pt; color: #18181b;">${b.recommended}</li>`;
                 });
             }
-            md += `\n`;
+            
+            expHtml += `
+            <div style="margin-bottom: 12pt; font-family: 'Calibri', Arial, sans-serif;">
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 2pt;">
+                    <tr>
+                        <td style="font-weight: bold; font-size: 11pt; color: #000000; font-family: 'Calibri', Arial, sans-serif;">${exp.role.toUpperCase()}</td>
+                    </tr>
+                </table>
+                <div style="font-weight: bold; color: #52525b; font-size: 11pt; font-family: 'Calibri', Arial, sans-serif; margin-bottom: 4pt;">${exp.company}</div>
+                <ul style="margin-top: 2pt; margin-bottom: 6pt; padding-left: 18pt; list-style-type: disc;">
+                    ${bulletsHtml}
+                </ul>
+            </div>`;
         });
     }
     
-    if (res.revisions?.skillsStructure) {
-        md += `## KEAHLIAN & PERANGKAT LUNAK\n\n`;
-        md += `${res.revisions.skillsStructure}\n\n`;
+    return `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office'
+          xmlns:w='urn:schemas-microsoft-com:office:word'
+          xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+        <meta charset='utf-8'>
+        <title>${name} - CV Teroptimalkan</title>
+        <!--[if gte mso 9]>
+        <xml>
+            <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForBrowser/>
+            </w:WordDocument>
+        </xml>
+        <![endif]-->
+        <style>
+            @page {
+                size: 21cm 29.7cm;
+                margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+            }
+            body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.4; color: #18181b; }
+            .header { text-align: center; border-bottom: 2px solid #18181b; padding-bottom: 8pt; margin-bottom: 16pt; }
+            .name { font-size: 18pt; font-weight: bold; text-transform: uppercase; margin: 0; color: #000000; font-family: 'Calibri', 'Arial', sans-serif; }
+            .contact { font-size: 11px; color: #52525b; margin-top: 4pt; font-family: 'Calibri', 'Arial', sans-serif; }
+            .section { margin-bottom: 18pt; font-family: 'Calibri', 'Arial', sans-serif; }
+            .section-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #d4d4d8; padding-bottom: 2pt; margin-bottom: 8pt; color: #000000; font-family: 'Calibri', 'Arial', sans-serif; letter-spacing: 0.05em; }
+            .text { font-size: 11pt; text-align: justify; margin: 0; color: #18181b; font-family: 'Calibri', 'Arial', sans-serif; }
+            .pre { white-space: pre-wrap; font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; margin: 0; color: #18181b; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="name">${name}</div>
+            <div class="contact">${contact}</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">RINGKASAN PROFESIONAL</div>
+            <p class="text">${summary}</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">PENGALAMAN KERJA</div>
+            ${expHtml}
+        </div>
+        
+        <div class="section">
+            <div class="section-title">KEAHLIAN & PERANGKAT LUNAK</div>
+            <pre class="pre">${skills}</pre>
+        </div>
+    </body>
+    </html>
+    `.trim();
+}
+
+function compileFullCvPlainText(res) {
+    let text = "";
+    text += `${res.candidateName || 'NAMA LENGKAP'}\n`;
+    text += `${res.candidateContact || 'Kontak'}\n\n`;
+    
+    text += `RINGKASAN PROFESIONAL\n`;
+    text += `=====================\n`;
+    text += `${res.revisions?.summary?.recommended || ''}\n\n`;
+    
+    text += `PENGALAMAN KERJA\n`;
+    text += `================\n`;
+    if (res.revisions?.experience?.length) {
+        res.revisions.experience.forEach(exp => {
+            text += `${exp.role.toUpperCase()}\n`;
+            text += `${exp.company}\n`;
+            if (exp.bullets?.length) {
+                exp.bullets.forEach(b => {
+                    text += `- ${b.recommended}\n`;
+                });
+            }
+            text += `\n`;
+        });
     }
     
-    return md.trim();
+    text += `KEAHLIAN & PERANGKAT LUNAK\n`;
+    text += `==========================\n`;
+    text += `${res.revisions?.skillsStructure || ''}\n`;
+    
+    return text.trim();
 }

@@ -328,22 +328,45 @@ Tools: Git, Docker, AWS
 
                         <!-- Subtab 4: Full CV -->
                         <div class="subtab-content" id="rev-full-cv">
-                            <p class="text-muted text-xs mb-4">Salin atau unduh dokumen CV lengkap Anda yang telah dioptimalkan dengan seluruh rekomendasi revisi AI.</p>
-                            <div class="skills-structure-box">
-                                <div class="skills-structure-header flex-between">
-                                    <span>Teks CV Lengkap (Markdown)</span>
-                                    <div class="flex-items-center">
-                                        <button class="btn btn-secondary btn-xs btn-copy" data-target="full-cv-text">
-                                            <i data-lucide="copy"></i> Salin
-                                        </button>
-                                        <button class="btn btn-emerald btn-xs" id="btn-download-cv">
-                                            <i data-lucide="download"></i> Unduh (.md)
-                                        </button>
+                            <p class="text-muted text-xs mb-4">Pratinjau CV teroptimasi Anda di bawah ini. Anda dapat menyalin teksnya atau mengunduhnya sebagai dokumen **Microsoft Word (.doc)**.</p>
+                            
+                            <div class="cv-document-actions flex-between mb-4">
+                                <span class="text-xs text-muted">Format Dokumen: Microsoft Word (.doc)</span>
+                                <div class="flex-items-center">
+                                    <button class="btn btn-secondary btn-xs" id="btn-copy-full-cv">
+                                        <i data-lucide="copy"></i> Salin Teks
+                                    </button>
+                                    <button class="btn btn-emerald btn-xs" id="btn-download-cv">
+                                        <i data-lucide="download"></i> Unduh MS Word (.doc)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Page-like CV Preview Container -->
+                            <div class="cv-preview-page-container">
+                                <div class="cv-preview-paper" id="cv-paper-content">
+                                    <div class="cv-paper-header">
+                                        <h2 class="cv-paper-name" id="cv-paper-name">NAMA LENGKAP</h2>
+                                        <div class="cv-paper-contact" id="cv-paper-contact">Telepon | Email | LinkedIn | Lokasi</div>
+                                    </div>
+                                    
+                                    <div class="cv-paper-section">
+                                        <h3 class="cv-paper-section-title">RINGKASAN PROFESIONAL</h3>
+                                        <p class="cv-paper-text" id="cv-paper-summary">Ringkasan profil profesional akan ditampilkan di sini.</p>
+                                    </div>
+                                    
+                                    <div class="cv-paper-section">
+                                        <h3 class="cv-paper-section-title">PENGALAMAN KERJA</h3>
+                                        <div id="cv-paper-experience">
+                                            <!-- Dynamic experience entries -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cv-paper-section">
+                                        <h3 class="cv-paper-section-title">KEAHLIAN & PERANGKAT LUNAK</h3>
+                                        <p class="cv-paper-text" id="cv-paper-skills" style="white-space: pre-wrap;"></p>
                                     </div>
                                 </div>
-                                <pre class="code-box" id="full-cv-text" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">
-[Teks CV lengkap hasil revisi akan digenerasikan di sini setelah analisis]
-                                </pre>
                             </div>
                         </div>
                     </div>
