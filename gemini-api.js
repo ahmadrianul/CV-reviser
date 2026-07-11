@@ -1,6 +1,6 @@
 // INTEGRATION WITH GEMINI API
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
 
 /**
  * Checks if the Gemini API Key is valid by making a simple request

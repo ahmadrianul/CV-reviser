@@ -512,9 +512,11 @@ function initSettings() {
     els.btnToggleKey.addEventListener('click', () => {
         const type = els.apiKeyInput.type === 'password' ? 'text' : 'password';
         els.apiKeyInput.type = type;
-        const icon = els.btnToggleKey.querySelector('i');
-        icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
-        lucide.createIcons({ node: els.btnToggleKey });
+        const icon = els.btnToggleKey.querySelector('i, svg');
+        if (icon) {
+            icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
+            lucide.createIcons({ node: els.btnToggleKey });
+        }
     });
     
     // Save Settings
