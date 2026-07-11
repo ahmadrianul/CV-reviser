@@ -58,10 +58,7 @@ Kembalikan HANYA objek JSON tersebut tanpa penanda Markdown markdown code blocks
                     }
                 ]
             }
-        ],
-        generationConfig: {
-            response_mime_type: "application/json"
-        }
+        ]
     };
 
     const response = await fetch(url, {
@@ -80,7 +77,7 @@ Kembalikan HANYA objek JSON tersebut tanpa penanda Markdown markdown code blocks
     const data = await response.json();
     const responseText = data.candidates[0].content.parts[0].text;
     
-    return JSON.parse(responseText);
+    return cleanAndParseJSON(responseText);
 }
 
 /**
@@ -159,10 +156,7 @@ PENTING:
                     { text: prompt }
                 ]
             }
-        ],
-        generationConfig: {
-            response_mime_type: "application/json"
-        }
+        ]
     };
 
     const response = await fetch(url, {
@@ -181,5 +175,20 @@ PENTING:
     const data = await response.json();
     const responseText = data.candidates[0].content.parts[0].text;
     
-    return JSON.parse(responseText);
+    return cleanAndParseJSON(responseText);
+}
+
+/**
+ * Clean Markdown code blocks and parse JSON safely
+ * @param {string} text 
+ * @returns {object}
+ */
+function cleanAndParseJSON(text) {
+    let cleanText = text.trim();
+    // Remove ```json and ``` wrapper if present
+    if (cleanText.startsWith("```")) {
+        cleanText = cleanText.replace(/^```(json)?/i, "");
+        cleanText = cleanText.replace(/```$/, "");
+    }
+    return JSON.parse(cleanText.trim());
 }
