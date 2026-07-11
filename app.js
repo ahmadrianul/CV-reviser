@@ -247,9 +247,9 @@ function switchTab(tabId) {
     
     // If settings button was clicked directly
     if (tabId === 'tab-settings') {
-        els.btnTabSettings.classList.add('active');
+        if (els.btnTabSettings) els.btnTabSettings.classList.add('active');
     } else {
-        els.btnTabSettings.classList.remove('active');
+        if (els.btnTabSettings) els.btnTabSettings.classList.remove('active');
     }
     
     // Scroll to top
@@ -518,61 +518,79 @@ function clearJobImage() {
 
 // SETTINGS KEY SETUP
 function initSettings() {
-    // Click Settings Button
-    els.btnTabSettings.addEventListener('click', () => {
-        switchTab('tab-settings');
-    });
+    // Click Settings Button (legacy compatibility)
+    if (els.btnTabSettings) {
+        els.btnTabSettings.addEventListener('click', () => {
+            switchTab('tab-settings');
+        });
+    }
     
     // Toggle Visibility
-    els.btnToggleKey.addEventListener('click', () => {
-        const type = els.apiKeyInput.type === 'password' ? 'text' : 'password';
-        els.apiKeyInput.type = type;
-        const icon = els.btnToggleKey.querySelector('i, svg');
-        if (icon) {
-            icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
-            lucide.createIcons({ node: els.btnToggleKey });
-        }
-    });
+    if (els.btnToggleKey) {
+        els.btnToggleKey.addEventListener('click', () => {
+            const type = els.apiKeyInput.type === 'password' ? 'text' : 'password';
+            els.apiKeyInput.type = type;
+            const icon = els.btnToggleKey.querySelector('i, svg');
+            if (icon) {
+                icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
+                lucide.createIcons({ node: els.btnToggleKey });
+            }
+        });
+    }
     
-    // Save Settings
-    els.btnSaveSettings.addEventListener('click', async () => {
-        const newKey = els.apiKeyInput.value.trim();
-        const selectedModel = els.modelSelect ? els.modelSelect.value : 'gemini-3.5-flash';
-        
-        // Save model first
-        state.activeModel = selectedModel;
-        localStorage.setItem('gemini_active_model', selectedModel);
+    // Auto-save & Verify API Key on change/blur
+    if (els.apiKeyInput) {
+        els.apiKeyInput.addEventListener('change', async () => {
+            const newKey = els.apiKeyInput.value.trim();
+            
+            if (!newKey) {
+                // Delete Key
+                state.apiKey = '';
+                localStorage.removeItem('gemini_api_key');
+                updateApiStatus(false);
+                showToast('API Key dihapus. Berjalan kembali dalam Mode Demo.', 'info');
+                return;
+            }
+            
+            showToast('Memverifikasi API Key...', 'info');
+            els.apiKeyInput.disabled = true;
+            
+            const isValid = await checkApiKeyValid(newKey);
+            els.apiKeyInput.disabled = false;
+            
+            if (isValid) {
+                state.apiKey = newKey;
+                localStorage.setItem('gemini_api_key', newKey);
+                updateApiStatus(true);
+                showToast('API Key valid dan berhasil disimpan!', 'success');
+            } else {
+                updateApiStatus(false);
+                showToast('API Key tidak valid atau tidak bisa dihubungi. Silakan periksa kembali.', 'error');
+            }
+        });
+    }
+    
+    // Auto-save Model Selection on change
+    if (els.modelSelect) {
+        els.modelSelect.addEventListener('change', () => {
+            const selectedModel = els.modelSelect.value;
+            state.activeModel = selectedModel;
+            localStorage.setItem('gemini_active_model', selectedModel);
+            showToast(`Model AI diubah ke: ${selectedModel === 'gemini-3.5-flash' ? 'Gemini 3.5 Flash' : 'Gemini 3.1 Flash Lite'}`, 'success');
+        });
+    }
 
-        if (!newKey) {
-            // Delete Key
-            state.apiKey = '';
-            localStorage.removeItem('gemini_api_key');
-            updateApiStatus(false);
-            showToast('Pengaturan disimpan. Berjalan dalam Mode Demo.', 'info');
+    if (els.btnSaveSettings) {
+        els.btnSaveSettings.addEventListener('click', () => {
             switchTab('tab-cv');
-            return;
-        }
-        
-        showToast('Memverifikasi API Key...', 'info');
-        els.btnSaveSettings.disabled = true;
-        
-        const isValid = await checkApiKeyValid(newKey);
-        els.btnSaveSettings.disabled = false;
-        
-        if (isValid) {
-            state.apiKey = newKey;
-            localStorage.setItem('gemini_api_key', newKey);
-            updateApiStatus(true);
-            showToast('Pengaturan berhasil disimpan dan aktif!', 'success');
-            switchTab('tab-cv');
-        } else {
-            showToast('API Key tidak valid atau tidak bisa dihubungi untuk model terpilih. Silakan periksa kembali.', 'error');
-        }
-    });
+        });
+    }
     
-    els.btnCloseSettings.addEventListener('click', () => {
-        switchTab('tab-cv');
-    });
+    if (els.btnCloseSettings) {
+        els.btnCloseSettings.addEventListener('click', () => {
+            switchTab('tab-cv');
+        });
+    }
 }
 
 // COPY CLIPBOARD IMPLEMENTATION
