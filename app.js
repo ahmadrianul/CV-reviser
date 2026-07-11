@@ -84,6 +84,8 @@ const els = {
     newSummaryText: document.getElementById('new-summary-text'),
     experienceRevisionsList: document.getElementById('experience-revisions-list'),
     skillsStructureText: document.getElementById('skills-structure-text'),
+    fullCvText: document.getElementById('full-cv-text'),
+    btnDownloadCv: document.getElementById('btn-download-cv'),
     coverLetterText: document.getElementById('cover-letter-text'),
     
     // Settings Tab
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initJobInput();
     initSettings();
     initCopyButtons();
+    initDownloadButton();
 });
 
 // TOAST NOTIFICATIONS
@@ -817,4 +820,63 @@ function renderResults(res) {
     
     // 9. Cover Letter
     els.coverLetterText.textContent = res.coverLetter || "Rancangan surat lamaran kerja.";
+    
+    // 10. Revisions - Full CV Compile
+    const fullCvMd = compileFullCvMarkdown(res);
+    if (els.fullCvText) {
+        els.fullCvText.textContent = fullCvMd;
+    }
+}
+
+function initDownloadButton() {
+    if (els.btnDownloadCv) {
+        els.btnDownloadCv.addEventListener('click', () => {
+            const text = els.fullCvText.textContent;
+            if (!text || text.includes('[Teks CV lengkap')) {
+                showToast('Jalankan analisis terlebih dahulu.', 'error');
+                return;
+            }
+            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'CV_Revised.md');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('CV berhasil diunduh sebagai Markdown!', 'success');
+        });
+    }
+}
+
+function compileFullCvMarkdown(res) {
+    let md = "";
+    md += `# CV TEROPTIMALISASI (REVISI AI)\n\n`;
+    
+    if (res.revisions?.summary?.recommended) {
+        md += `## RINGKASAN PROFESIONAL\n\n`;
+        md += `${res.revisions.summary.recommended}\n\n`;
+    }
+    
+    if (res.revisions?.experience?.length) {
+        md += `## PENGALAMAN KERJA\n\n`;
+        res.revisions.experience.forEach(exp => {
+            md += `### ${exp.role}\n`;
+            md += `*${exp.company}*\n\n`;
+            if (exp.bullets?.length) {
+                exp.bullets.forEach(bullet => {
+                    md += `- ${bullet.recommended}\n`;
+                });
+            }
+            md += `\n`;
+        });
+    }
+    
+    if (res.revisions?.skillsStructure) {
+        md += `## KEAHLIAN & PERANGKAT LUNAK\n\n`;
+        md += `${res.revisions.skillsStructure}\n\n`;
+    }
+    
+    return md.trim();
 }

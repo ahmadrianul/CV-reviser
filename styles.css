@@ -1305,3 +1305,8 @@ textarea {
         bottom: 16px;
     }
 }
+
+/* UTILS */
+.hidden {
+    display: none !important;
+}

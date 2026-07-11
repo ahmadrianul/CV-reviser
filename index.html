@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- styles.css -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='66' font-family='sans-serif' font-size='46' font-weight='900' fill='white' text-anchor='middle'>CV</text></svg>">
     <!-- PDF.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <!-- Lucide Icons CDN -->
@@ -274,6 +276,7 @@
                                 <button class="sub-tab active" data-subtab="rev-summary">Summary</button>
                                 <button class="sub-tab" data-subtab="rev-experience">Pengalaman Kerja</button>
                                 <button class="sub-tab" data-subtab="rev-skills">Struktur Skills</button>
+                                <button class="sub-tab" data-subtab="rev-full-cv">Full CV</button>
                             </div>
                         </div>
 
@@ -319,6 +322,27 @@
 Hard Skills: React, Node.js, TypeScript, PostgreSQL
 Soft Skills: Mentoring, Agile Methodology
 Tools: Git, Docker, AWS
+                                </pre>
+                            </div>
+                        </div>
+
+                        <!-- Subtab 4: Full CV -->
+                        <div class="subtab-content" id="rev-full-cv">
+                            <p class="text-muted text-xs mb-4">Salin atau unduh dokumen CV lengkap Anda yang telah dioptimalkan dengan seluruh rekomendasi revisi AI.</p>
+                            <div class="skills-structure-box">
+                                <div class="skills-structure-header flex-between">
+                                    <span>Teks CV Lengkap (Markdown)</span>
+                                    <div class="flex-items-center">
+                                        <button class="btn btn-secondary btn-xs btn-copy" data-target="full-cv-text">
+                                            <i data-lucide="copy"></i> Salin
+                                        </button>
+                                        <button class="btn btn-emerald btn-xs" id="btn-download-cv">
+                                            <i data-lucide="download"></i> Unduh (.md)
+                                        </button>
+                                    </div>
+                                </div>
+                                <pre class="code-box" id="full-cv-text" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">
+[Teks CV lengkap hasil revisi akan digenerasikan di sini setelah analisis]
                                 </pre>
                             </div>
                         </div>
