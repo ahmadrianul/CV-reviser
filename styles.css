@@ -1416,3 +1416,30 @@ textarea {
     margin-bottom: 3px;
 }
 
+/* SELECT SELECTOR DROPDOWN */
+select.form-control-select {
+    width: 100%;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    outline: none;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+select.form-control-select:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 1px var(--input-focus-border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+select.form-control-select option {
+    background-color: #18181b;
+    color: var(--text-primary);
+}
+
+

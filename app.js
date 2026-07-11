@@ -6,6 +6,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // Application State
 const state = {
     apiKey: localStorage.getItem('gemini_api_key') || '',
+    activeModel: localStorage.getItem('gemini_active_model') || 'gemini-3.5-flash',
     cvText: '',
     cvFileName: '',
     jobTitle: '',
@@ -95,6 +96,7 @@ const els = {
     
     // Settings Tab
     apiKeyInput: document.getElementById('api-key-input'),
+    modelSelect: document.getElementById('model-select'),
     btnToggleKey: document.getElementById('btn-toggle-key'),
     btnSaveSettings: document.getElementById('btn-save-settings'),
     btnCloseSettings: document.getElementById('btn-close-settings'),
@@ -116,6 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateApiStatus(true);
     } else {
         updateApiStatus(false);
+    }
+    
+    // Load Saved Model Selector Value
+    if (els.modelSelect) {
+        els.modelSelect.value = state.activeModel;
     }
     
     // Setup Event Listeners
@@ -530,13 +537,18 @@ function initSettings() {
     // Save Settings
     els.btnSaveSettings.addEventListener('click', async () => {
         const newKey = els.apiKeyInput.value.trim();
+        const selectedModel = els.modelSelect ? els.modelSelect.value : 'gemini-3.5-flash';
         
+        // Save model first
+        state.activeModel = selectedModel;
+        localStorage.setItem('gemini_active_model', selectedModel);
+
         if (!newKey) {
             // Delete Key
             state.apiKey = '';
             localStorage.removeItem('gemini_api_key');
             updateApiStatus(false);
-            showToast('API Key dihapus. Berjalan kembali dalam Mode Demo.', 'info');
+            showToast('Pengaturan disimpan. Berjalan dalam Mode Demo.', 'info');
             switchTab('tab-cv');
             return;
         }
@@ -551,10 +563,10 @@ function initSettings() {
             state.apiKey = newKey;
             localStorage.setItem('gemini_api_key', newKey);
             updateApiStatus(true);
-            showToast('API Key berhasil disimpan dan aktif!', 'success');
+            showToast('Pengaturan berhasil disimpan dan aktif!', 'success');
             switchTab('tab-cv');
         } else {
-            showToast('API Key tidak valid atau tidak bisa dihubungi. Silakan periksa kembali.', 'error');
+            showToast('API Key tidak valid atau tidak bisa dihubungi untuk model terpilih. Silakan periksa kembali.', 'error');
         }
     });
     

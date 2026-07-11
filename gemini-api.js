@@ -1,6 +1,9 @@
 // INTEGRATION WITH GEMINI API
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent";
+function getApiUrl() {
+    const activeModel = localStorage.getItem('gemini_active_model') || 'gemini-3.5-flash';
+    return `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent`;
+}
 
 /**
  * Checks if the Gemini API Key is valid by making a simple request
@@ -10,7 +13,7 @@ const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/
 async function checkApiKeyValid(apiKey) {
     if (!apiKey) return false;
     try {
-        const url = `${GEMINI_API_URL}?key=${apiKey}`;
+        const url = `${getApiUrl()}?key=${apiKey}`;
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -35,7 +38,7 @@ async function checkApiKeyValid(apiKey) {
  * @returns {Promise<{jobTitle: string, company: string, description: string}>}
  */
 async function extractJobFromImage(base64Image, mimeType, apiKey) {
-    const url = `${GEMINI_API_URL}?key=${apiKey}`;
+    const url = `${getApiUrl()}?key=${apiKey}`;
     
     const prompt = `Analisis gambar lowongan kerja ini. Ekstrak informasi lowongan kerja tersebut ke dalam format JSON dengan struktur berikut:
 {
@@ -95,7 +98,7 @@ Kembalikan HANYA objek JSON tersebut tanpa penanda Markdown markdown code blocks
  * @returns {Promise<object>}
  */
 async function analyzeCVAndJob(cvText, jobTitle, jobDescription, apiKey) {
-    const url = `${GEMINI_API_URL}?key=${apiKey}`;
+    const url = `${getApiUrl()}?key=${apiKey}`;
     
     const prompt = `
 Kamu adalah seorang pakar rekrutmen profesional, konsultan karir, dan ahli sistem ATS (Applicant Tracking System).
