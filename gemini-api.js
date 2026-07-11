@@ -1,6 +1,6 @@
 // INTEGRATION WITH GEMINI API
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent";
 
 /**
  * Checks if the Gemini API Key is valid by making a simple request
@@ -58,7 +58,13 @@ Kembalikan HANYA objek JSON tersebut tanpa penanda Markdown markdown code blocks
                     }
                 ]
             }
-        ]
+        ],
+        generationConfig: {
+            responseMimeType: "application/json",
+            thinkingConfig: {
+                thinkingBudget: 0
+            }
+        }
     };
 
     const response = await fetch(url, {
@@ -156,7 +162,13 @@ PENTING:
                     { text: prompt }
                 ]
             }
-        ]
+        ],
+        generationConfig: {
+            responseMimeType: "application/json",
+            thinkingConfig: {
+                thinkingBudget: 0
+            }
+        }
     };
 
     const response = await fetch(url, {
