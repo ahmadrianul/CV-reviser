@@ -531,57 +531,6 @@ function initSettings() {
         });
     }
     
-    // Toggle Access Password Visibility
-    if (els.btnToggleAccessPassword) {
-        els.btnToggleAccessPassword.addEventListener('click', () => {
-            const type = els.accessPasswordInput.type === 'password' ? 'text' : 'password';
-            els.accessPasswordInput.type = type;
-            const icon = els.btnToggleAccessPassword.querySelector('i, svg');
-            if (icon) {
-                icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
-                lucide.createIcons({ node: els.btnToggleAccessPassword });
-            }
-        });
-    }
-
-    // Access Password Validation
-    if (els.accessPasswordInput) {
-        els.accessPasswordInput.addEventListener('input', () => {
-            const val = els.accessPasswordInput.value.trim();
-            if (val === '@nakAyam12345') {
-                state.isUnlocked = true;
-                localStorage.setItem('access_password', '@nakAyam12345');
-                if (els.apiKeyContainer) els.apiKeyContainer.classList.remove('hidden');
-                if (els.optionGemini35) {
-                    els.optionGemini35.disabled = false;
-                    els.optionGemini35.textContent = 'Gemini 3.5 Flash (Terbaik & Akurat)';
-                }
-                showToast('Akses premium terverifikasi! Fitur terbuka.', 'success');
-            } else {
-                // Silently lock premium features while typing
-                state.isUnlocked = false;
-                localStorage.removeItem('access_password');
-                if (els.apiKeyContainer) els.apiKeyContainer.classList.add('hidden');
-                if (els.optionGemini35) {
-                    els.optionGemini35.disabled = true;
-                    els.optionGemini35.textContent = 'Gemini 3.5 Flash (Premium - Terkunci 🔒)';
-                }
-                
-                if (state.activeModel === 'gemini-3.5-flash') {
-                    state.activeModel = 'gemini-3.1-flash-lite';
-                    localStorage.setItem('gemini_active_model', 'gemini-3.1-flash-lite');
-                    if (els.modelSelect) els.modelSelect.value = 'gemini-3.1-flash-lite';
-                }
-            }
-        });
-        
-        els.accessPasswordInput.addEventListener('change', () => {
-            const val = els.accessPasswordInput.value.trim();
-            if (val && val !== '@nakAyam12345') {
-                showToast('Password akses salah. Silakan coba lagi.', 'error');
-            }
-        });
-    }
 
     // Toggle API Key Visibility
     if (els.btnToggleKey) {
@@ -766,7 +715,13 @@ async function runAnalysis() {
         console.error(e);
         els.emptyState.classList.remove('hidden');
         els.loadingState.classList.add('hidden');
-        showToast(`Terjadi kesalahan: ${e.message}`, 'error');
+        
+        const errorMsg = e.message || 'Kesalahan tidak diketahui';
+        if (errorMsg.includes('429') || errorMsg.toLowerCase().includes('resource_exhausted') || errorMsg.toLowerCase().includes('quota') || errorMsg.toLowerCase().includes('limit')) {
+            showToast('Batas kuota harian atau request per menit API Gemini telah tercapai (Error 429 - Quota Limit). Mohon tunggu beberapa menit atau gunakan API Key Anda sendiri.', 'error');
+        } else {
+            showToast(`Terjadi kesalahan: ${errorMsg}`, 'error');
+        }
     } finally {
         state.isAnalyzing = false;
     }
