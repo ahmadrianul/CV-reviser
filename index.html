@@ -38,6 +38,9 @@
                     <span class="dot"></span>
                     <span class="badge-text">Mode Demo (Tanpa API Key)</span>
                 </div>
+                <button class="icon-btn" id="btn-tab-settings" title="Pengaturan API Key">
+                    <i data-lucide="settings"></i>
+                </button>
             </div>
         </header>
 
@@ -63,41 +66,6 @@
 
             <!-- TAB 1: UPLOAD CV -->
             <section class="tab-panel active" id="tab-cv">
-                <!-- AI Configuration Card -->
-                <div class="card mb-6">
-                    <h3>Konfigurasi AI (Opsional)</h3>
-                    <p class="text-muted text-xs mb-4">Masukkan Password Akses untuk mengaktifkan API Key Anda dan membuka model premium Gemini 3.5 Flash.</p>
-                    
-                    <!-- Access Password Input -->
-                    <div class="form-group mb-4">
-                        <label for="access-password-input" class="text-xs">Password Akses</label>
-                        <div class="password-input-wrapper">
-                            <input type="password" id="access-password-input" placeholder="Masukkan password akses premium">
-                            <button type="button" class="toggle-password" id="btn-toggle-access-password">
-                                <i data-lucide="eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- API Key Input (Hidden by default) -->
-                    <div class="form-group mb-4 hidden" id="api-key-container">
-                        <label for="api-key-input" class="text-xs">Gemini API Key Anda</label>
-                        <div class="password-input-wrapper">
-                            <input type="password" id="api-key-input" placeholder="Masukkan API Key (AQ...)">
-                            <button type="button" class="toggle-password" id="btn-toggle-key">
-                                <i data-lucide="eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="model-select" class="text-xs">Pilih Model AI Gemini</label>
-                        <select id="model-select" class="form-control-select">
-                            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Sangat Cepat & Hemat Kuota)</option>
-                            <option value="gemini-3.5-flash" id="option-gemini-35" disabled>Gemini 3.5 Flash (Premium - Terkunci 🔒)</option>
-                        </select>
-                    </div>
-                </div>
 
                 <div class="card card-hero">
                     <h2>Mulai dengan CV Anda</h2>
@@ -374,6 +342,48 @@ Tools: Git, Docker, AWS
                         <div class="cover-letter-box" id="cover-letter-text">
                             [Surat lamaran hasil AI akan digenerasikan di sini]
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SETTINGS (API KEY & MODEL SELECTION) -->
+            <section class="tab-panel" id="tab-settings">
+                <div class="card card-hero">
+                    <h2>Pengaturan Gemini API Key & Model AI</h2>
+                    <p class="card-desc">Untuk melakukan analisis secara langsung (real-time) dengan CV dan lowongan Anda sendiri, Anda membutuhkan API Key Gemini. Silakan masukkan password akses untuk membuka fitur premium.</p>
+
+                    <!-- Access Password Input -->
+                    <div class="form-group mt-6">
+                        <label for="access-password-input">Password Akses Premium</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="access-password-input" placeholder="Masukkan password akses premium">
+                            <button type="button" class="toggle-password" id="btn-toggle-access-password">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- API Key Input (Hidden by default) -->
+                    <div class="form-group mt-4 hidden" id="api-key-container">
+                        <label for="api-key-input">Gemini API Key Anda</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="api-key-input" placeholder="Masukkan API Key (AQ...)">
+                            <button type="button" class="toggle-password" id="btn-toggle-key">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label for="model-select">Pilih Model AI Gemini</label>
+                        <select id="model-select" class="form-control-select">
+                            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (Sangat Cepat & Hemat Kuota)</option>
+                            <option value="gemini-3.5-flash" id="option-gemini-35" disabled>Gemini 3.5 Flash (Premium - Terkunci 🔒)</option>
+                        </select>
+                    </div>
+
+                    <div class="card-actions flex-end mt-8">
+                        <button class="btn btn-primary" id="btn-close-settings">Kembali</button>
                     </div>
                 </div>
             </section>

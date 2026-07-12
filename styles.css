@@ -1259,32 +1259,105 @@ textarea {
 /* RESPONSIVE DESIGN */
 @media (max-width: 600px) {
     .app-header {
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
+        flex-direction: row;
+        padding: 12px 16px;
+        gap: 12px;
+        justify-content: space-between;
         align-items: center;
+        margin-bottom: 12px;
     }
     
     .logo-area {
-        flex-direction: column;
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .logo-icon i {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .logo-area h1 {
+        font-size: 0.95rem;
+    }
+    
+    .logo-area .subtitle {
+        display: none;
+    }
+    
+    .badge-text {
+        display: none;
+    }
+    
+    .badge {
+        padding: 6px;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .badge .dot {
+        margin: 0;
+    }
+
+    .header-actions {
+        gap: 8px;
+    }
+
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
     }
     
     .app-nav {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 4px;
+        margin-bottom: 16px;
+    }
+    
+    .nav-tab {
+        padding: 8px 4px;
+        font-size: 0.68rem;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
+    
+    .nav-tab i {
+        width: 14px;
+        height: 14px;
     }
     
     .card {
-        padding: 20px;
+        padding: 16px;
     }
     
     .card-header-tabs {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
     }
     
     .option-tabs {
-        flex-direction: column;
-        gap: 4px;
+        flex-direction: row;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .option-tab {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 8px 4px;
     }
     
     .sub-tabs {
@@ -1294,9 +1367,34 @@ textarea {
     }
     
     .sub-tab {
-        padding: 8px 4px;
-        font-size: 0.75rem;
+        padding: 8px 2px;
+        font-size: 0.7rem;
         text-align: center;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .card-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .flex-items-center, .flex-between {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .flex-items-center > *, .flex-between > * {
+        width: 100%;
+    }
+    
+    .results-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
     
     .toast {

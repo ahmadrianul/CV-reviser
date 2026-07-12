@@ -18,6 +18,7 @@ const state = {
     jobImageBase64: '',
     jobImageMime: '',
     activeTab: 'tab-cv',
+    previousTab: 'tab-cv',
     activeOptionTab: 'opt-text',
     activeSubTab: 'rev-summary',
     analysisResult: null,
@@ -245,6 +246,10 @@ function initNavigation() {
 }
 
 function switchTab(tabId) {
+    if (tabId === 'tab-settings' && state.activeTab !== 'tab-settings') {
+        state.previousTab = state.activeTab;
+    }
+
     els.panels.forEach(panel => {
         if (panel.id === tabId) {
             panel.classList.add('active');
@@ -658,7 +663,7 @@ function initSettings() {
     
     if (els.btnCloseSettings) {
         els.btnCloseSettings.addEventListener('click', () => {
-            switchTab('tab-cv');
+            switchTab(state.previousTab);
         });
     }
 }
