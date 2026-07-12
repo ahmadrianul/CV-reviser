@@ -214,7 +214,7 @@ body {
 
 .nav-tab {
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-secondary);
     padding: 12px 16px;
     border-radius: var(--radius-md);
@@ -1257,33 +1257,38 @@ textarea {
 }
 
 /* RESPONSIVE DESIGN */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .app-container {
+        padding: 12px 10px 40px 10px;
+    }
+
     .app-header {
         flex-direction: row;
-        padding: 12px 16px;
-        gap: 12px;
+        padding: 10px 14px;
+        gap: 8px;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 12px;
+        border-radius: var(--radius-md);
     }
     
     .logo-area {
         flex-direction: row;
-        gap: 8px;
+        gap: 6px;
     }
     
     .logo-icon {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
     }
     
     .logo-icon i {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
     }
     
     .logo-area h1 {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
     
     .logo-area .subtitle {
@@ -1295,69 +1300,77 @@ textarea {
     }
     
     .badge {
-        padding: 6px;
+        padding: 4px;
         border-radius: 50%;
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         justify-content: center;
         align-items: center;
+        border: none;
     }
     
     .badge .dot {
         margin: 0;
+        width: 8px;
+        height: 8px;
     }
 
     .header-actions {
-        gap: 8px;
+        gap: 6px;
+        display: flex;
+        align-items: center;
     }
 
     .icon-btn {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: var(--radius-sm);
     }
     
     .app-nav {
         grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
+        gap: 4px;
         padding: 4px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
+        border-radius: var(--radius-md);
     }
     
     .nav-tab {
-        padding: 8px 4px;
-        font-size: 0.68rem;
+        padding: 6px 2px;
+        font-size: 0.65rem;
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
         text-align: center;
+        border-radius: var(--radius-sm);
     }
     
     .nav-tab i {
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
     }
     
     .card {
-        padding: 16px;
+        padding: 14px;
+        border-radius: var(--radius-md);
     }
     
     .card-header-tabs {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: 10px;
     }
     
     .option-tabs {
         flex-direction: row;
-        gap: 8px;
+        gap: 6px;
         width: 100%;
     }
     
     .option-tab {
         flex: 1;
         text-align: center;
-        font-size: 0.75rem;
-        padding: 8px 4px;
+        font-size: 0.72rem;
+        padding: 6px 2px;
     }
     
     .sub-tabs {
@@ -1367,8 +1380,8 @@ textarea {
     }
     
     .sub-tab {
-        padding: 8px 2px;
-        font-size: 0.7rem;
+        padding: 6px 2px;
+        font-size: 0.65rem;
         text-align: center;
     }
     
@@ -1385,7 +1398,7 @@ textarea {
     .flex-items-center, .flex-between {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 10px;
     }
 
     .flex-items-center > *, .flex-between > * {
@@ -1394,13 +1407,13 @@ textarea {
     
     .results-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 12px;
     }
     
     .toast {
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
     }
 }
 
