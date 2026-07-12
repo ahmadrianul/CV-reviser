@@ -3,14 +3,10 @@
 // Initialize PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-const savedPassword = localStorage.getItem('access_password') || '';
-const isInitiallyUnlocked = savedPassword === '@nakAyam12345';
-
 // Application State
 const state = {
     apiKey: localStorage.getItem('gemini_api_key') || '',
-    activeModel: (isInitiallyUnlocked ? localStorage.getItem('gemini_active_model') : 'gemini-3.1-flash-lite') || 'gemini-3.1-flash-lite',
-    isUnlocked: isInitiallyUnlocked,
+    activeModel: localStorage.getItem('gemini_active_model') || 'gemini-3.5-flash',
     cvText: '',
     cvFileName: '',
     jobTitle: '',
@@ -100,10 +96,6 @@ const els = {
     coverLetterText: document.getElementById('cover-letter-text'),
     
     // Settings Tab
-    accessPasswordInput: document.getElementById('access-password-input'),
-    btnToggleAccessPassword: document.getElementById('btn-toggle-access-password'),
-    apiKeyContainer: document.getElementById('api-key-container'),
-    optionGemini35: document.getElementById('option-gemini-35'),
     apiKeyInput: document.getElementById('api-key-input'),
     modelSelect: document.getElementById('model-select'),
     btnToggleKey: document.getElementById('btn-toggle-key'),
@@ -121,16 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render Icons
     lucide.createIcons();
     
-    // Set Access Password input value if saved
-    if (state.isUnlocked && els.accessPasswordInput) {
-        els.accessPasswordInput.value = '@nakAyam12345';
-        if (els.apiKeyContainer) els.apiKeyContainer.classList.remove('hidden');
-        if (els.optionGemini35) {
-            els.optionGemini35.disabled = false;
-            els.optionGemini35.textContent = 'Gemini 3.5 Flash (Terbaik & Akurat)';
-        }
-    }
-    
+
     // Load Saved API Key & Check Status
     if (state.apiKey) {
         if (els.apiKeyInput) els.apiKeyInput.value = state.apiKey;
